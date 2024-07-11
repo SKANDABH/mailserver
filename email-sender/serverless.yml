@@ -1,0 +1,37 @@
+org: skanda
+app: email-sender
+service: email-sender
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: python3.8
+  environment:
+    SENDER_EMAIL: ${.env:SENDER_EMAIL}
+
+functions:
+  sendEmail:
+    handler: handler.send_email
+    events:
+      - http:
+          path: send-email
+          method: post
+
+custom:
+  serverless-offline:
+    port: 3000
+
+package:
+  include:
+    - .env
+
+# Define dependencies for python-dotenv
+pythonRequirements:
+  dockerizePip: non-linux
+  slim: true
+  strip: true
+  zip: true
+  requirementsPath: requirements.txt
